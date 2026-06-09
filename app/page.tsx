@@ -10,10 +10,10 @@ const handleWithdrawal = () => {
   setError(true);
 };
   return (
-    <main className="min-h-screen bg-black text-white flex justify-center">
+    <main className="min-h-screen bg-black text-white flex justify-center overflow-x-hidden overflow-x-hidden">
       <div className="w-full max-w-md px-5 py-6 pb-24">
         {/* TOP MENU */}
-        <div className="flex items-center gap-3 mb-8">
+        <div className="flex items-center gap-2 mb-8">
           <img
             src="/user.png"
             alt="User"
