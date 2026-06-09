@@ -10,8 +10,8 @@ const handleWithdrawal = () => {
   setError(true);
 };
   return (
-    <main className="min-h-screen bg-black text-white flex justify-center overflow-x-hidden overflow-x-hidden">
-      <div className="w-full max-w-md px-5 py-6 pb-24">
+    <main className="min-h-screen bg-black text-white flex justify-center overflow-x-hidden overflow-x-hidden overflow-x-hidden">
+      <div className="w-full max-w-md mx-auto px-5 py-6 pb-24 overflow-hidden">
         {/* TOP MENU */}
         <div className="flex items-center gap-3 mb-8">
           <img
@@ -19,13 +19,13 @@ const handleWithdrawal = () => {
             alt="User"
             className="w-12 h-12 rounded-full object-cover shrink-0"
           />
-          <button className="bg-[#b89cff] text-black px-7 py-3 rounded-full text-xl font-bold">
+          <button className="bg-[#b89cff] text-black px-5 py-3 rounded-full text-lg font-bold">
             Home
           </button>
-          <button className="bg-neutral-900 text-neutral-300 px-7 py-3 rounded-full text-xl font-bold">
+          <button className="bg-neutral-900 text-neutral-300 px-5 py-3 rounded-full text-lg font-bold">
             Trade
           </button>
-          <button className="bg-neutral-900 text-neutral-300 px-7 py-3 rounded-full text-xl font-bold">
+          <button className="bg-neutral-900 text-neutral-300 px-5 py-3 rounded-full text-lg font-bold">
             Explore
           </button>
         </div>
