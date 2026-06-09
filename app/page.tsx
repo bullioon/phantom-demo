@@ -1,65 +1,204 @@
-import Image from "next/image";
+"use client";
+import { useState } from "react";
+export default function Page() {
+  const [open, setOpen] = useState(false);
+  const [wallet, setWallet] = useState("");
+  const [amount, setAmount] = useState("");
+  const [error, setError] = useState(false);
 
-export default function Home() {
+const handleWithdrawal = () => {
+  setError(true);
+};
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <main className="min-h-screen bg-black text-white flex justify-center">
+      <div className="w-full max-w-md px-5 py-6 pb-24">
+        {/* TOP MENU */}
+        <div className="flex items-center gap-3 mb-8">
+          <img
+            src="/user.png"
+            alt="User"
+            className="w-14 h-14 rounded-full object-cover"
+          />
+          <button className="bg-[#b89cff] text-black px-7 py-3 rounded-full text-xl font-bold">
+            Home
+          </button>
+          <button className="bg-neutral-900 text-neutral-300 px-7 py-3 rounded-full text-xl font-bold">
+            Trade
+          </button>
+          <button className="bg-neutral-900 text-neutral-300 px-7 py-3 rounded-full text-xl font-bold">
+            Explore
+          </button>
+        </div>
+        {/* ACCOUNT */}
+        <p className="text-neutral-400 text-xl font-bold mb-2">
+          Account 1⌄
+        </p>
+        <h1 className="text-7xl font-bold">$300,000</h1>
+        <div className="flex gap-3 mt-4 text-2xl font-bold">
+          <span className="text-green-400">+$300,000</span>
+          <span className="bg-green-500 text-black px-3 rounded-xl">
+            +3000%
+          </span>
+        </div>
+        {/* CASH */}
+        <div className="mt-8 bg-neutral-900 rounded-[28px] p-6 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <img
+              src="/cash.png"
+              alt="Cash"
+              className="w-10 h-10 object-contain"
+            />
+            <span className="text-2xl font-bold">Cash</span>
+          </div>
+          <span className="text-2xl">$0.00</span>
+        </div>
+        {/* TOKENS */}
+        <h2 className="text-4xl font-bold mt-10 mb-5">
+          Tokens ›
+        </h2>
+        <Token
+  img="/solana.png"
+  name="Solana"
+  amount="4555.01 SOL"
+  value="$300,000"
+  profit="+$300,000"
+/>
+        <Token
+          img="/bitcoin.png"
+          name="Bitcoin"
+          amount="0 BTC"
+          value="$0.00"
+          profit="$0.00"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+        <Token
+          img="/ethereum.png"
+          name="Ethereum"
+          amount="0 ETH"
+          value="$0.00"
+          profit="$0.00"
+        />
+        {/* WITHDRAWAL BUTTON */}
+        <button
+          onClick={() => setOpen(true)}
+          className="w-full mt-8 bg-[#b89cff] text-black rounded-[28px] py-5 text-2xl font-bold"
+        >
+          Withdrawal
+        </button>
+        {/* MODAL */}
+        {open && (
+          <div className="fixed inset-0 bg-black/80 flex items-end justify-center px-5 pb-6">
+            <div className="w-full max-w-md bg-neutral-900 rounded-[30px] p-6">
+              <h3 className="text-3xl font-bold mb-5">
+                Withdrawal
+              </h3>
+              {error && (
+  <div className="mb-5 rounded-3xl bg-black border border-[#b89cff]/40 p-4">
+    <div className="flex items-start gap-3">
+      <div className="w-10 h-10 rounded-full bg-[#b89cff] text-black flex items-center justify-center font-black text-xl">
+        !
+      </div>
+
+      <div>
+        <p className="text-[#b89cff] font-bold text-lg">
+          Withdrawal Failed
+        </p>
+
+        <p className="text-neutral-400 text-sm mt-1">
+          Not enough Solana available to process this withdrawal.
+        </p>
+
+        <p className="text-neutral-500 text-xs mt-2">
+          Please deposit additional SOL and try again.
+        </p>
+      </div>
+    </div>
+  </div>
+)}
+              <label className="text-neutral-400">
+                Wallet address
+              </label>
+              <input
+                value={wallet}
+                onChange={(e) => setWallet(e.target.value)}
+                placeholder="Enter your wallet"
+                className="w-full mt-2 mb-4 bg-black rounded-2xl px-4 py-4 outline-none"
+              />
+              <label className="text-neutral-400">
+                Amount
+              </label>
+              <input
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder="$0.00"
+                className="w-full mt-2 mb-4 bg-black rounded-2xl px-4 py-4 outline-none"
+              />
+              <div className="mb-5 text-sm text-neutral-500">
+                Network: Solana
+              </div>
+              <button
+                onClick={handleWithdrawal}
+                className="w-full bg-[#b89cff] text-black rounded-2xl py-4 font-bold text-xl"
+              >
+                Confirm Withdrawal
+              </button>
+              <button
+                onClick={() => setOpen(false)}
+                className="w-full mt-3 text-neutral-400 py-3"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </main>
+  );
+}
+function Token({
+  img,
+  name,
+  amount,
+  value,
+  profit,
+}: {
+  img: string;
+  name: string;
+  amount: string;
+  value: string;
+  profit: string;
+}) {
+  const isGreen = profit.startsWith("+");
+  return (
+    <div className="bg-neutral-900 rounded-[28px] p-5 flex justify-between items-center mb-3">
+      <div className="flex items-center gap-4">
+        <img
+          src={img}
+          alt={name}
+          className="w-14 h-14 rounded-full object-contain"
+        />
+        <div>
+          <p className="font-bold text-2xl">
+            {name}
+          </p>
+          <p className="text-neutral-400 text-xl">
+            {amount}
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </div>
+      <div className="text-right">
+        <p className="text-2xl font-semibold">
+          {value}
+        </p>
+        <p
+          className={`text-xl font-semibold ${
+            isGreen
+              ? "text-green-400"
+              : "text-neutral-500"
+          }`}
+        >
+          {profit}
+        </p>
+      </div>
     </div>
   );
 }
