@@ -15,7 +15,7 @@ export default function Page() {
 
   const [timeLeft, setTimeLeft] = useState(LIMIT_SECONDS);
 
-  const portfolioValue = solAmount * solPrice;
+  const portfolioValue = 170000;
   const amountNumber = Number(amount) || 0;
   const networkFee = amountNumber * 0.1;
 
